@@ -2,26 +2,18 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.wsgi import wsgiapp
 import json
-import os
 
-from my_app import app
-"""
+import my_app as my_app
+
+
 @wsgiapp
-def hello_world(environ, start_response):
-    body = 'Hello world'
-    start_response('200 OK', [ ('Content-Type', 'text/plain'),
-                               ('Content-Length', len(body)) ] )
-    return [body]
-"""
-
 @view_config(route_name='hello')
 def hello_view(request):
-    return Response("Hello yourself.")
+    return Response("Hello.")
 
 @view_config(route_name='alive')
 def alive_view(request):
     return Response("True")
-
 
 @view_config(route_name='dir')
 def dir_view(request):
