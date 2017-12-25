@@ -1,8 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/local/python3.6
 
 
 import datetime
-
+#from ws4py.client.threadedclient import WebSocketClient
 from decimal import *
 getcontext().prec = 3
 
@@ -10,25 +10,20 @@ import sys
 import time
 
 import cherrypy
-
-#from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
-#from ws4py.websocket import WebSocket
-
-
-
 cherrypy.config.update({'server.socket_host': '10.0.0.53' } ) # Pub IP
 cherrypy.config.update({'server.socket_port': 9999})
 cherrypy.config.update({'tools.caching.on' :False})
-#WebSocketPlugin(cherrypy.engine).subscribe()
-#cherrypy.tools.websocket = WebSocketTool()
+cherrypy.config.update({'environment': 'embedded'})
 
-cherrypy.engine.autoreload.files.add("/home/bundito/Downloads")
-cherrypy.engine.autoreload.frequency = 1
 
-global TIMEOUT
-TIMEOUT = 0.00
-cherrypy.log("%f seconds" % (TIMEOUT))
+#cherrypy.engine.autoreload.files.add("/home/bundito/Downloads")
+#cherrypy.engine.autoreload.frequency = 1
 
+#global TIMEOUT
+#TIMEOUT = 0.00
+#cherrypy.log("%f seconds" % (TIMEOUT))
+
+""" 
 from cherrypy.process.plugins import Monitor
 
 class Clockwork(object):
@@ -70,10 +65,11 @@ class Clockwork(object):
         minutes = (seconds % 3600) // 60
         secs = (seconds % 60)
         timeserved = time.localtime(Clockwork.last_served)
-        return """
-        Last served: {}<P>
-        Time until shutdown: {} min(s) {} seconds
-        """.format (time.strftime("%X", timeserved), minutes, secs)
+        return 
+       # Last served: {}<P>
+       # Time until shutdown: {} min(s) {} seconds
+        #format (time.strftime("%X", timeserved), minutes, secs)
+        
 
 Monitor(cherrypy.engine, Clockwork.ticktock, frequency=1).subscribe()
 
@@ -82,20 +78,9 @@ def timeout_reset():
 
 def report():
     return str(Clockwork.diff)
-""" 
-class Ws:
-    @cherrypy.expose
-    def socketcopy(self):
-        wsA = WebSocket('10.0.0.135:9999/websocket/a')
-
-
-class Handler_SocketCopy(WebSocket):
-    import stream_mover
-    while line = stream_mover.move():
-        
-
-    handler = cherrypy.request.ws_handler
 """
+#----------- String Generator below -------------#
+
 
 class StringGenerator(object):
 
@@ -106,36 +91,36 @@ class StringGenerator(object):
         return content("Ok")
 
     @cherrypy.expose
-    def index(self):
+    def hello(self):
         return "Hello world!"
 
     @cherrypy.expose
     def alive(self):
         return("OK")
 
-    @cherrypy.expose
-    def timeremaining(self):
-        val = Clockwork.timeremaining(self)
-        return val
+   # @cherrypy.expose
+   # def timeremaining(self):
+   #     val = Clockwork.timeremaining(self)
+   #     return val
 
     @cherrypy.expose
     def dir(self):
-        cl.is_valid()
-        from radioclash.app import DownloadListing
+        #cl.is_valid()
+        import DownloadListing
         return DownloadListing.jaysun
 
     @cherrypy.expose
     def item(self, item):
-        cl.is_valid()
+    #    cl.is_valid()
         print(type(item))
-        from radioclash.sources import analyzetitle
+        import analyzetitle
         jayson = analyzetitle.sendquery("-rename", item)
         return jayson
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
     def move(app_data):
-        cl.is_valid()
+    #    cl.is_valid()
         jayson = cherrypy.request.json
         import filecopy
         j = filecopy.move(jayson)
@@ -143,15 +128,15 @@ class StringGenerator(object):
 
     @cherrypy.expose
     def delete(self, file, path):
-        cl.is_valid()
+    #    cl.is_valid()
         import deleter
         jayson = deleter.delete(file, path)
         return jayson
 
     @cherrypy.expose
     def read_config(self):
-        cl.is_valid()
-        from radioclash.sources import config_app
+     #   cl.is_valid()
+        import config_app
         jayson = config_app.read_config()
         #jayson = jayson.encode('utf-8')
         return jayson
@@ -159,11 +144,11 @@ class StringGenerator(object):
     @cherrypy.expose
     @cherrypy.tools.json_in()
     def write_config(self):
-        cl.is_valid()
+     #   cl.is_valid()
         #data = data.decode('utf-8')
         #jayson = pickle.loads(data)
         jayson = cherrypy.request.json
-        from radioclash.sources import config_app
+        import config_app
         j = config_app.write_complete_config(jayson)
         return j
 
@@ -174,11 +159,23 @@ class StringGenerator(object):
 
 if __name__ == '__main__':
 
-    mins = sys.argv[2]
+    #mins = sys.argv[2]
 
-    mins = float(mins)
-    seconds = mins * float(60.0)
-    TIMEOUT = float(seconds)
-    cl = Clockwork(seconds)
+    #mins = float(mins)
+    #seconds = mins * float(60.0)
+    #TIMEOUT = float(60.00)
+    #cl = Clockwork(seconds)
+
+
+
+   # cherrypy.tree.mount(Sockets('ws://localhost:9998/index'), '/index')
+    #cherrypy.tree.mount(StringGenerator())
+
+    #ws = Sockets('ws://localhost:9998/index', protocols=['http-only', 'chat'])
+    #ws.daemon = False
+    #ws.connect()
+
+    #cherrypy.engine.start()
+    #cherrypy.engine.block()
 
     cherrypy.quickstart(StringGenerator())
